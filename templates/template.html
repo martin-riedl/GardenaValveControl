@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<head>
+   <title>Gardena Valve Control</title>
+</head>
+
+<body>
+   <h1>Gardena Valve Status</h1>
+
+   {% for v in valves %}
+   <p>{{ v }}
+   {% if valves[v] == "opened" %}
+      is currently opened (<a href="/close">turn off</a>)
+   {% else %}
+      is currently closed (<a href="/open">turn on</a>)
+   {% endif %}
+   </p>
+   {% endfor %}
+
+</body>
+</html>
