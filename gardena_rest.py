@@ -14,6 +14,12 @@ valves = {
   "Valve 1" : "closed"
 }
 
+from threading import Timer
+
+def timeout():
+    close()
+    close()
+
 def statusPage():
   templateData = {
     'valves' : valves
@@ -25,11 +31,16 @@ def hello():
   return statusPage()
 
 @app.route("/open")
-def open(): 
+def ep_open():
+  open(lambda : Timer(5*60, timeout).start()
+
+@app.route("/open_inf")
+def open(exec_timer=lambda : None):
   GPIO.output(open, GPIO.HIGH)
   time.sleep(0.5)
   GPIO.output(open, GPIO.LOW)
   valves["Valve 1"]="opened"
+  exec_timer()
   return statusPage()
 
 @app.route("/close")
@@ -49,7 +60,7 @@ if __name__ == "__main__":
   close=23
 
   pins = [open,close] #on, off
-  
+
   for pin in pins:
     GPIO.setup(pin, GPIO.OUT)
 
