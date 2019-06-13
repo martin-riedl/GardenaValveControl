@@ -8,17 +8,18 @@ import time
 import RPi.GPIO as GPIO
 
 from flask import Flask, render_template
+from threading import Timer
+
 app = Flask(__name__)
 
 valves = {
   "Valve 1" : "closed"
 }
 
-from threading import Timer
-
 def timeout():
-    close()
-    close()
+    print("closing timeout")
+    pure_close()
+    pure_close()
 
 def statusPage():
   templateData = {
@@ -30,29 +31,36 @@ def statusPage():
 def hello():
   return statusPage()
 
-@app.route("/open")
-def ep_open():
-  open(lambda : Timer(5*60, timeout).start()
-
-@app.route("/open_inf")
-def open(exec_timer=lambda : None):
+def pure_open():
   GPIO.output(open, GPIO.HIGH)
   time.sleep(0.5)
   GPIO.output(open, GPIO.LOW)
   valves["Valve 1"]="opened"
+
+
+@app.route("/open")
+def def_open():
+  return p_open(lambda : Timer(5*60, timeout).start())
+
+@app.route("/openinf")
+def p_open(exec_timer=lambda : None):
+  pure_open()
   exec_timer()
   return statusPage()
 
-@app.route("/close")
-def close():
+def pure_close():
   GPIO.output(close, GPIO.HIGH)
   time.sleep(0.150)
   GPIO.output(close, GPIO.LOW)
   valves["Valve 1"]="closed"
+
+@app.route("/close")
+def f_close():
+  pure_close()
   return statusPage()
 
 if __name__ == "__main__":
-  print "Setup GPIO"
+  print("Setup GPIO")
   GPIO.setmode(GPIO.BCM)
 
   # define GPIO ports variables to open/close the valve
@@ -66,6 +74,6 @@ if __name__ == "__main__":
 
   app.run(host="0.0.0.0", port="4999")
 
-  print "Cleanup"
+  print("Cleanup")
   GPIO.cleanup()
 
