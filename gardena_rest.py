@@ -9,12 +9,13 @@ import RPi.GPIO as GPIO
 
 from flask import Flask, render_template
 from threading import Timer
+from flask import jsonify
 
 app = Flask(__name__)
 
-valves = {
-  "Valve 1" : "closed"
-}
+valves = [{
+  "status" : "closed"
+}]
 
 def timeout():
     print("closing timeout")
@@ -35,8 +36,11 @@ def pure_open():
   GPIO.output(open, GPIO.HIGH)
   time.sleep(0.5)
   GPIO.output(open, GPIO.LOW)
-  valves["Valve 1"]="opened"
+  valves[0]["status"]="opened"
 
+@app.route("/status")
+def get_status():
+  return jsonify(valves)
 
 @app.route("/open")
 def def_open():
@@ -52,7 +56,7 @@ def pure_close():
   GPIO.output(close, GPIO.HIGH)
   time.sleep(0.150)
   GPIO.output(close, GPIO.LOW)
-  valves["Valve 1"]="closed"
+  valves[0]["status"]="closed"
 
 @app.route("/close")
 def f_close():
