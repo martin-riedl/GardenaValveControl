@@ -17,12 +17,13 @@ valves_config = []
 
 valves_status = []
 
-def timeout(gpio_close):
-  """Timeout function which prints the closing event and for robustness applies the closing function multiple times."""
-
-  print("closing timeout")
-  pure_close(gpio_close=gpio_close)
-  pure_close(gpio_close=gpio_close)
+def mk_timeout(gpio_close):
+  """Closure that creates a parametrized timout function which prints the closing event and for robustness applies the closing function multiple times."""
+  def timeout():
+    print("closing timeout")
+    pure_close(gpio_close=gpio_close)
+    pure_close(gpio_close=gpio_close)
+  return timeout
 
 def statusPage() -> Text:
   """Create the HTML status page of the valves.
@@ -67,7 +68,8 @@ def get_status():
 @app.route("/open/<idx>")
 def def_open(idx=0):
   """Performs a timebound opening of a valve and returns the updated status page."""
-  return p_open(idx, lambda gpio_close: Timer(5*60, timeout(gpio_close=gpio_close)).start())
+  #return p_open(idx, lambda gpio_close: Timer(5*60, mk_timeout(gpio_close=gpio_close)).start())
+  return p_open(idx, lambda gpio_close: Timer(1*10, mk_timeout(gpio_close=gpio_close)).start())
 
 @app.route("/openinf")
 @app.route("/openinf/<idx>")
