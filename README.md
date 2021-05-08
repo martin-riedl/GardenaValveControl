@@ -4,6 +4,20 @@ A simple control unit that allows to switch Gardena 9V Valves
 
 This project builds a controler (which serves as a substitute for e.g. the Gardena C14e) to interface up to two 9V-valves. It can be connected to a Raspberry Pi and integrated with OpenHAB or other home automation solutions via a REST based interface.
 
+## Setup
+
+For python2
+```bash
+sudo apt-get install python-dev python-rpi.gpio
+python -m pip install -r requirements.txt
+```
+
+For python3
+```bash
+sudo apt-get install python3-dev python3-rpi.gpio
+python3 -m pip install -r requirements.txt
+```
+
 ## Autostart @ RasperryPi
 For autostart add the following line to `/etc/rc.local`:
 ```bash

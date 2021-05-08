@@ -6,14 +6,15 @@
 <body>
    <h1>Gardena Valve Status</h1>
 
-   {% for v in valves %}
-   <p>{{ v }}
-   {% if valves[v] == "opened" %}
-      is currently opened (<a href="/close">turn off</a>)
-   {% else %}
-      is currently closed (<a href="/open">turn on</a>)
-   {% endif %}
-   </p>
+   {% for idx in range(valves|length) %}
+     <p>
+     Valve {{ idx }} is {{ valves[idx]["status"] }}
+     {% if valves[idx]["status"] == "opened" %}
+        (<a href="/close">turn off</a>)
+     {% else %}
+        (<a href="/open">turn on</a>)
+     {% endif %}
+     </p>
    {% endfor %}
 
 </body>

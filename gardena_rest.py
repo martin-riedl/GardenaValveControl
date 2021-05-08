@@ -37,6 +37,7 @@ def pure_open():
   time.sleep(0.5)
   GPIO.output(open, GPIO.LOW)
   valves[0]["status"]="opened"
+  print(valves)
 
 @app.route("/status")
 def get_status():
@@ -57,6 +58,7 @@ def pure_close():
   time.sleep(0.150)
   GPIO.output(close, GPIO.LOW)
   valves[0]["status"]="closed"
+  print(valves)
 
 @app.route("/close")
 def f_close():
