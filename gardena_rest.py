@@ -45,7 +45,7 @@ def pure_open(gpio_open):
 def pure_close(gpio_close : int):
   """Closes a valve.
   Args:
-      gpio_close (int): The closing GPIO port of the desired valve. 
+      gpio_close (int): The closing GPIO port of the desired valve.
   """
   GPIO.output(gpio_close, GPIO.HIGH)
   time.sleep(0.150)
@@ -67,16 +67,16 @@ def get_status():
 @app.route("/open/<idx>")
 def def_open(idx=0):
   """Performs a timebound opening of a valve and returns the updated status page."""
-  return p_open(idx, lambda : Timer(5*60, timeout).start())
+  return p_open(idx, lambda gpio_close: Timer(5*60, timeout(gpio_close=gpio_close)).start())
 
 @app.route("/openinf")
 @app.route("/openinf/<idx>")
-def p_open(idx=0, exec_timer=lambda : None):
+def p_open(idx=0, exec_timer=lambda gpio_close : None):
   """Performs a boundless opening of a valve and returns the updated status page."""
-  if len(valves_config)>0: 
+  if len(valves_config)>0:
     pure_open(gpio_open=valves_config[idx]["open"])
     exec_timer(gpio_close=valves_config[idx]["close"])
-  
+
   return statusPage()
 
 @app.route("/close")
@@ -102,7 +102,8 @@ if __name__ == "__main__":
   })
 
   # determine all gpio pins used
-  pins = [pin for pin in [valve_config.values() for valve_config in valves_config]]
+  pins = [pin for pin in [list(valve_config.values()) for valve_config in valves_config]]
+  print(pins)
 
   for pin in pins:
     GPIO.setup(pin, GPIO.OUT)
