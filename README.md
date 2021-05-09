@@ -26,11 +26,27 @@ For autostart add the following line to `/etc/rc.local`:
 
 ## OpenHAB Item
 In `/etc/openhab2/items/default.items` the watering service can be accessed by, e.g. adding the following line (which has to be adapted your specific configuration): 
-```bash
-Switch Gardena "Gardena Bewässerung" (gOutside) [ "Switchable" ] { http=">[ON:GET:http://kitchen.local:4999/open] >[OFF:GET:http://kitchen.local:4999/close]" }
+```java
+Switch Gardena "Gardena Bewässerung" (gOutside) [ "Switchable" ] { http=">[ON:GET:http://gardena.local/open] >[OFF:GET:http://kitchen.local:4999/close]" }
+String Gardena_Status           "Gardena Status [%s]"           <flow>          (gOutside)                              { http="<[http://gardena.local/status:10000:JSONPATH($[0].status)]" }
 ```
-By using OpenHab together with the Hue Binding, also Amazon Alexa can be used to control the watering service. 
 
+With the upgrade to OpenHab3, the http1-Binding is deprecated. The HTTP Bindung V2 is used instead. The following has to be added to a things file: 
+```java
+Thing http:url:gardena "Gardena" [ baseURL="http://192.168.0.4:4999/", commandMethod="GET", refresh="2" ] {
+        Channels:
+                Type switch : switch [ commandExtension="%2$s",  onValue="open", offValue="close" ]
+                Type string : status [ stateExtension="status", stateTransformation="JSONPATH:$[0].status" ]
+}
+```
+The following has to be added to an items file:
+```java
+Switch Gardena                  "Gardena Bewässerung"           <faucet>        (gOutside)      [ "Switchable" ]        { channel="http:url:gardena:switch" }
+String Gardena_Status           "Gardena Status [%s]"           <flow>          (gOutside)                              { channel="http:url:gardena:status" }
+```
+
+
+By using OpenHab together with the Hue Binding, also Amazon Alexa can be used to control the watering service. 
 
 
 
