@@ -21,7 +21,7 @@ python3 -m pip install -r requirements.txt
 ## Autostart @ RasperryPi
 For autostart add the following line to `/etc/rc.local`:
 ```bash
-/bin/sleep 15 && screen -dmS Gardena bash -c "python /home/pi/GardenaValveCtrl/gardena_rest.py" &
+/bin/sleep 15 && screen -dmS Gardena bash -c "python3 /home/pi/GardenaValveCtrl/gardena_rest.py" &
 ```
 
 ## OpenHAB Item
